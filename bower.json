@@ -1,0 +1,25 @@
+{
+  "name": "myapp",
+  "authors": [
+    "romashka50 <roma.buchuk@gmail.com>"
+  ],
+  "description": "dfsfdsdfsdfsdf",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.22",
+    "backbone": "~1.2.3",
+    "jquery": "~2.1.4",
+    "text": "~2.0.14",
+    "moment": "momentjs#~2.11.1"
+  }
+}

@@ -1,0 +1,19 @@
+<h3 class="blocktitle">Users:</h3>
+<div id="newUser">
+    <input id="newName" class="new" placeholder="Name">
+    <input id="newAge" class="new" placeholder="Age">
+    <form id="newSex" class="new">
+        <input type="radio" name="sex" value="male" checked="checked">Male<br>
+        <input type="radio" name="sex" value="female">Female
+    </form>
+    <input class="new" type="button" id="newUserButton" value="Create">
+</div>
+    <% for(var tag in tags) { %>
+    <div class="user">
+        <input class="delButton" type="button" id=<%= (tags[tag]).name %> value="Delete">
+        <img class="avatar" src="/img/user.png"/>
+        <p>Name: <%= (tags[tag]).name %></p>
+        <p>Age: <%= (tags[tag]).age %></p>
+        <p>Sex: <%= (tags[tag]).sex ? 'Male' : 'Female' %></p>
+    </div>
+    <% } %>

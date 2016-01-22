@@ -1,0 +1,8 @@
+<h3  class="blocktitle">Posts:</h3>
+<% for(var tag in tags) { %>
+<div class="post">
+    <h4><b><%= (tags[tag]).title %></b></h4>
+    <p><%= (tags[tag]).text %></p>
+    <p class="date">Date: <%= new Date((tags[tag]).date) %></p>
+</div>
+<% } %>
