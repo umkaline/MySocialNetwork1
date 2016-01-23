@@ -17,9 +17,6 @@ require.config({
         Underscore: {
             exports: '_'
         },
-        jQuery    : {
-            exports: '$'
-        },
         'Backbone': ['Underscore', 'jQuery'],
         'app'     : ['Backbone']
     }

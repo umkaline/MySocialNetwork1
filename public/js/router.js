@@ -1,9 +1,10 @@
 define(['Backbone'], function (Backbone) {
     var Router = Backbone.Router.extend({
         routes: {
-            'myApp/login'       : 'login',
-            'myApp/:contentType': 'goTo',
-            '*any'              : 'default'
+            'myApp/login': 'login',
+            'myApp/register': 'register',
+            'myApp/main': 'main',
+            '*any': 'default'
         },
 
         initialize: function () {
@@ -16,9 +17,10 @@ define(['Backbone'], function (Backbone) {
 
         login: function () {
             var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
 
             if (APP.authorised) {
-                Backbone.history.navigate('myApp/users', {trigger: true});
+                Backbone.history.navigate('#myApp/main', {trigger: true});
             } else {
                 require(['views/login'], function (LoginView) {
                     if (self.view) {
@@ -29,36 +31,40 @@ define(['Backbone'], function (Backbone) {
             }
         },
 
-        goTo: function (contentType) {
+        register: function () {
             var self = this;
-            var viewUrl = 'views/' + contentType + '/' + contentType;
-            var collectionUrl = 'collections/' + contentType;
+            APP.authorised = localStorage.getItem('loggedIn');
 
-            console.log(contentType);
-
-            require([collectionUrl, viewUrl], function (Collection, View) {
-                var startTime = new Date();
-                var collection = new Collection();
-
-                collection.on('reset', buildView, self);
-
-                function buildView() {
+            if (APP.authorised) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/register'], function (RegisterView) {
                     if (self.view) {
                         self.view.undelegateEvents();
                     }
+                    self.view = new RegisterView();
+                });
+            }
+        },
 
-                    self.view = new View({
-                        chanel    : this.chanel,
-                        collection: collection,
-                        startTime : startTime
-                    });
-                    /* self.changeView(view);*/
-                };
-            });
+        main: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (APP.mainView) {
+                //Backbone.history.navigate('#myApp/home', {trigger: true});
+            } else {
+                require(['views/main'], function (MainView) {
+                    APP.mainView = APP.mainView || new MainView();
+                });
+            }
         },
 
         default: function () {
-            Backbone.history.navigate('#myApp/login', {trigger: true});
+            APP.authorised = localStorage.getItem('loggedIn');
+            Backbone.history.navigate('#myApp/main', {trigger: true});
         }
     });
 

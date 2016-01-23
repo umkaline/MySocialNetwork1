@@ -1,32 +1,21 @@
-define([
-    'Backbone',
-    'moment'
-], function(Backbone, moment){
+define(['Backbone', 'moment'],
+    function(Backbone, moment){
     var UserModel = Backbone.Model.extend({
-        //by default idAttribute: 'id'
         idAttribute: '_id',
-        defaults: {
-            gender: 'male'
-        },
-
         urlRoot: function(){
             return '/myApi/user';
         },
 
-        parse: function(data){
-            if(data && data.age){
-                data.age = data.age.toFixed(0);
+        parse: function(data) {
+            if (data && data.dateOfBirth) {
+                var date = data.dateOfBirth;
+                date = new Date(date);
+                date  = moment(date).format("YYYY-MM-DD");
+                data.dateOfBirth = date;
             }
-
-            if(data && data.dateOfBirth){
-                data.dateOfBirth = moment(data.dateOfBirth).format('MM/DD/YY');
-            }
-
             return data;
         }
     });
 
-    //collection.fetch({reset: true, success: cb, error: cb})
-    
     return UserModel;
 });

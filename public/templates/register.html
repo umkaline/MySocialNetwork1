@@ -1,61 +1,69 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default">
                 <div class="panel-heading"> <strong class="">Register</strong>
 
                 </div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-3 control-label">Email</label>
+                        <div class="form-group required">
+                            <label for="email" class="col-sm-3 control-label">Email</label>
                             <div class="col-sm-9">
-                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email" required="">
+                                <input type="email" class="form-control" id="email" placeholder="Email" required="required">
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="firstName" class="col-sm-3 control-label">First Name</label>
+                            <div class="col-sm-9">
+                                <input type="name" class="form-control" id="firstName" placeholder="First Name" required="required">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-3 control-label">Name</label>
+                            <label for="lastName" class="col-sm-3 control-label">Last Name</label>
                             <div class="col-sm-9">
-                                <input type="name" class="form-control" id="inputName" placeholder="Name" required="">
+                                <input type="lastname" class="form-control" id="lastName" placeholder="Last Name" required="">
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="dateOfBirth" class="col-sm-3 control-label">Date of birth</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control" id="dateOfBirth" required="required">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-3 control-label">LastName</label>
+                            <label for="address" class="col-sm-3 control-label">Address</label>
                             <div class="col-sm-9">
-                                <input type="lastname" class="form-control" id="inputLastName" placeholder="LastName" required="">
+                                <input type="address" class="form-control" id="address" placeholder="Address" required="">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-3 control-label">Address</label>
+                        <div class="form-group required">
+                            <label for="location" class="col-sm-3 control-label">Location</label>
                             <div class="col-sm-9">
-                                <input type="address" class="form-control" id="inputAddress" placeholder="Address" required="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-3 control-label">Location</label>
-                            <div class="col-sm-9 input-group">
-                                <input type="address" class="form-control" id="inputLocation" placeholder="Location (Latitude, Longitude)" required="">
+                                <div class="input-group">
+                                <input type="text" class="form-control" id="location" placeholder="Latitude:<lat>;Longitude:<lon>" required="required">
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default" aria-label="Left Align">
+                                    <button type="button" class="btn btn-default" aria-label="Left Align" id="locateBtn">
                                         <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
                                     </button>
                                 </div>
+                                    </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
+                        <div class="form-group required">
+                            <label for="password" class="col-sm-3 control-label">Password</label>
                             <div class="col-sm-9">
-                                <input type="password" class="form-control" id="inputPassword3" placeholder="Password" required="">
+                                <input type="password" class="form-control" id="password" placeholder="Password" required="required">
                             </div>
                         </div>
                         <div class="form-group last">
                             <div class="col-sm-offset-3 col-sm-9">
-                                <button type="submit" class="btn btn-success btn-sm">Sign up</button>
+                                <button type="submit" class="btn btn-success btn-sm" id="registerBtn">Register</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="panel-footer">Registered? <a href="#login" class="">Login here</a>
+                <div class="panel-footer">Registered? <a href="#myApp/login" class="">Login here</a>
                 </div>
             </div>
         </div>

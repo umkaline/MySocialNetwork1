@@ -18,6 +18,9 @@ var db;
 var opts;
 var server;
 
+require('./models/user');
+UserModel = mongoose.model('user');
+
 require('./config/' + env);
 opts = {
     user: process.env.DB_USER,
@@ -28,10 +31,10 @@ mongoose.connect(process.env.DB_HOST, process.env.DB_NAME, parseInt(process.env.
 db = mongoose.connection;
 
 db.once('connected', function () {
-    //var userRouter = require('./routes/user');
+    var userRouter = require('./routes/user');
 
-    function onlyAuth(req, res, next){
-        if(req.session && req.session.loggedIn){
+    function onlyAuth(req, res, next) {
+        if (req.session && req.session.loggedIn) {
             return next();
         }
         res.status(401).send();
@@ -46,30 +49,26 @@ db.once('connected', function () {
 
     app.use(express.static(staticUrl));
     app.use(session({
-        name             : 'VRakashy',
-        key              : "key",
-        secret           : 'dfhjky4356sjdfbeuy64t5873yfkjshdf98349erfkdhfg984ytkdfh',
-        resave           : false,
+        name: 'VRakashy',
+        key: "key",
+        secret: 'dfhjky4356sjdfbeuy64t5873yfkjshdf98349erfkdhfg984ytkdfh',
+        resave: false,
         saveUninitialized: false,
-        store            : new SessionStorage({
+        store: new SessionStorage({
             mongooseConnection: db
         })
     }));
-    app.get('/', function (req, res, next) {
-        console.log(req.logged);
-        res.sendfile('index.html');
-    });
 
-    //app.use('/myApi/user', onlyAuth, userRouter);
+    app.use('/myApi/user', onlyAuth, userRouter);
 
     app.post('/login', function (req, res, next) {
         var body = req.body;
         var shaSum;
         var UserModel = mongoose.model('user');
 
-        if (body.password && body.login) {
+        if (body.password && body.email) {
             UserModel.findOne({
-                'name.first': body.login
+                'email': body.email
             }, function (err, user) {
                 if (err) {
                     next(err);
@@ -78,24 +77,68 @@ db.once('connected', function () {
                 shaSum.update(body.password);
                 body.password = shaSum.digest('hex');
 
-                if (user && user.password === body.password) {
-                    req.session.loggedIn = true;
-                    req.session.userId = user._id;
+                if (user) {
+                    if (user.password === body.password) {
+                        req.session.loggedIn = true;
+                        req.session.userId = user._id;
 
-                    return res.status(200).send({success: 'LoggedIn'});
+                        return res.status(200).send({success: 'Logged In'});
+                    } else {
+                        return res.status(200).send({fail: 'Wrong Password'});
+                    }
+                } else {
+                    return res.status(200).send({fail: 'No Such User'});
                 }
 
                 err = new Error();
                 err.status = 400;
                 next(err);
             });
+        } else {
+            return res.status(200).send({fail: 'Fill All Fields'});
+        }
+    });
+
+    app.post('/register', function (req, res, next) {
+        var body = req.body;
+        var UserModel = mongoose.model('user');
+
+        if (body.email) {
+            UserModel.findOne({
+                'email': body.email
+            }, function (err, user) {
+                if (err) {
+                    next(err);
+                }
+                if (user) {
+                    return res.status(200).send({fail: 'Email Allready Registered'});
+                } else {
+                    var user = new UserModel(req.body);
+                    var shaSum = crypto.createHash('sha256');
+
+                    if(user.password){
+                        shaSum.update(user.password);
+                        user.password = shaSum.digest('hex');
+                    }
+
+                    user.save(function (err, _user) {
+                        if (err) {
+                            return next(err);
+                        }
+
+                        res.status(200).send(_user);
+                    });
+                }
+            });
+        } else {
+            return res.status(200).send({fail: 'Specify Email'});
         }
     });
 
     app.post('/logout', function (req, res, next) {
         req.session.destroy();
 
-        res.status(200).send();
+        res.status(200).send({success: true});
     });
 
     app.listen(3000);
