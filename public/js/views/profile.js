@@ -12,7 +12,8 @@ define([
         events: {
             'click #editBtn': 'edit',
             'click #cancelBtn': 'cancel',
-            'click #saveBtn': 'save'
+            'click #saveBtn': 'save',
+            'click #locateBtn': 'locate'
         },
 
         edit: function (e) {
@@ -41,21 +42,26 @@ define([
             var address = this.$el.find('#address').val();
             var location = this.$el.find('#location').val();
             var dateOfBirth = this.$el.find('#dateOfBirth').val();
+            var photo = this.$el.find('#photoURL').val();
             var data = {
                 email: email,
                 firstName: firstName,
                 lastName: lastName,
                 address: address,
                 dateOfBirth: dateOfBirth,
-                location: location
+                location: location,
+                photo: photo
             };
 
-            user.set('isNew', false);
+            user.validate = function(attrs, options) {
+                if (!(attrs.firstName && attrs.lastName && attrs.email && attrs.location && attrs.dateOfBirth)) {
+                    alert("Required fields can't be empty")
+                    return "Required fields can't be empty";
+                }
+            };
 
             user.save(data, {
                 success: function (response, xhr) {
-                    alert(response.attributes.fail);
-                    console.log(response.attributes.fail);
                     self.template = _.template(profileTemplate);
                     self.render();
                 },
@@ -65,6 +71,23 @@ define([
             });
         },
 
+        locate: function (e) {
+            e.preventDefault();
+
+            $location = this.$el.find('#location');
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                $location.val("Geolocation is not supported by this browser.");
+            }
+
+            function showPosition(position) {
+                $location.val("Latitude:" + position.coords.latitude +
+                    ";Longitude:" + position.coords.longitude);
+            }
+        },
+
         initialize: function (options) {
             var self = this;
             var user = new UserModel();
@@ -72,6 +95,9 @@ define([
             user.fetch({
                 success: function () {
                     self.render();
+                },
+                error: function (err, xhr) {
+                    alert('Some error');
                 }
             });
         },

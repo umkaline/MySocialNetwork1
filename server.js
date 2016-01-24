@@ -32,6 +32,7 @@ db = mongoose.connection;
 
 db.once('connected', function () {
     var userRouter = require('./routes/user');
+    var feedRouter = require('./routes/feed');
 
     function onlyAuth(req, res, next) {
         if (req.session && req.session.loggedIn) {
@@ -60,6 +61,8 @@ db.once('connected', function () {
     }));
 
     app.use('/myApi/user', onlyAuth, userRouter);
+
+    app.use('/myApi/feed', onlyAuth, feedRouter);
 
     app.post('/login', function (req, res, next) {
         var body = req.body;

@@ -4,15 +4,16 @@ define(['Backbone'], function (Backbone) {
             'myApp/login': 'login',
             'myApp/register': 'register',
             'myApp/main': 'main',
+            'myApp/friends': 'friends',
             '*any': 'default'
         },
 
         initialize: function () {
             //events chanel
-            this.chanel = _.extend({}, Backbone.Events);
+            /*this.chanel = _.extend({}, Backbone.Events);
             this.listenTo(this.chanel, 'customEvent', function () {
                 console.log('---- customEvent fired ----');
-            })
+            })*/
         },
 
         login: function () {
@@ -53,11 +54,27 @@ define(['Backbone'], function (Backbone) {
 
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
-            } else if (APP.mainView) {
-                //Backbone.history.navigate('#myApp/home', {trigger: true});
             } else {
                 require(['views/main'], function (MainView) {
                     APP.mainView = APP.mainView || new MainView();
+                });
+            }
+        },
+
+        friends: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (!APP.mainView) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/friends'], function (FriendsView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new FriendsView();
                 });
             }
         },

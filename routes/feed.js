@@ -1,23 +1,35 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var crypto = require('crypto');
 var router = express.Router();
-var UserModel;
+var FeedModel;
 
-require('../models/user');
-UserModel = mongoose.model('user');
+require('../models/feed');
+FeedModel = mongoose.model('feed');
 
 router.get('/', function (req, res, next) {
-    UserModel.findOne({"_id" : req.session.userId},
-        {"password":0})
-        .exec(function (err, users) {
+    FeedModel.find({"userId" : req.session.userId},
+        {userId: 0}).exec(function (err, feeds) {
         if (err) {
             return next(err);
         }
 
-        res.status(200).send(users);
+        res.status(200).send(feeds);
     });
 });
+
+router.post('/', function (req, res, next) {
+    var body = req.body;
+    body.userId = req.session.userId;
+    var feed = new FeedModel(body);
+
+    feed.save(function (err, feed) {
+        if (err) {
+            return next(err);
+        }
+        res.status(200).send({success: true});
+    });
+});
+
 router.get('/:id', function (req, res, next) {
     var id = req.params.id;
 
@@ -27,7 +39,7 @@ router.get('/:id', function (req, res, next) {
 router.delete('/:id', function (req, res, next) {
     var id = req.params.id;
 
-    UserModel.findByIdAndRemove(id, function (err, response) {
+    FeedModel.findByIdAndRemove(id, function (err, response) {
         if (err) {
             return next(err);
         }

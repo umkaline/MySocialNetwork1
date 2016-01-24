@@ -1,1 +1,24 @@
-<p>MyFeeds HERE!!!!!!!</p>
+<div id="newFeed">
+    <span class="label">Topic: </span>
+    <input type="text" id="feedTopic">
+    <br>
+    <textarea name="feed" id="feedText" cols="50" rows="3"></textarea>
+    <br>
+    <button id="postBtn">Post</button>
+</div>
+<br>
+<div id="allMyFeeds">
+    <% for(var feed in feeds) { %>
+    <div id=<%= feeds[feed]._id %> class="oneFeed">
+        <span class="label">Topic: </span>
+        <span class="feedsTopic"><%= feeds[feed].topic%></span>
+        <span class="label">Posted: </span>
+        <span class="postedDate"><%= feeds[feed].dateOfPost%></span><br>
+        <p class="feedText">
+            <%= feeds[feed].text%>
+        </p>
+        <!--  <button id=<%= feeds[feed]._id %> class="editBtn">Edit</button> -->
+        <button id=<%= feeds[feed]._id %> class="deleteBtn">Delete</button>
+    </div>
+    <% } %>
+</div>
