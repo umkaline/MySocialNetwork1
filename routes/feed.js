@@ -5,9 +5,11 @@ var FeedModel;
 
 require('../models/feed');
 FeedModel = mongoose.model('feed');
+require('../models/user');
+UserModel = mongoose.model('user');
 
 router.get('/', function (req, res, next) {
-    FeedModel.find({"userId" : req.session.userId},
+    FeedModel.find({"userId": req.session.userId},
         {userId: 0}).exec(function (err, feeds) {
         if (err) {
             return next(err);
@@ -15,6 +17,35 @@ router.get('/', function (req, res, next) {
 
         res.status(200).send(feeds);
     });
+});
+
+router.get('/news', function (req, res, next) {
+    UserModel.find({"friends._id": req.session.userId})
+        .exec(function (err, users) {
+            if (err) {
+                return next(err);
+            }
+            usrs = users.map(function(user) {
+                return user._id;
+            });
+            FeedModel.find({"userId": {$in: usrs}})
+                .exec(function (err, feeds) {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    feeds = feeds.map(function(feed) {
+                        users.forEach(function(user){
+                            if (feed.userId == user._id) {
+                                feed._doc.photo = user.photo;
+                                feed._doc.userName = user.firstName;
+                            }
+                        });
+                        return feed;
+                    });
+                    res.status(200).send(feeds);
+                });
+        });
 });
 
 router.post('/', function (req, res, next) {
@@ -30,11 +61,18 @@ router.post('/', function (req, res, next) {
     });
 });
 
-router.get('/:id', function (req, res, next) {
+router.put('/like/:id', function (req, res, next) {
+    var body = req.body;
     var id = req.params.id;
 
-    res.status(200).send(id);
+    FeedModel.findByIdAndUpdate(id, body, {new: true}, function (err, response) {
+        if (err) {
+            return next(err);
+        }
+        res.status(200).send({success: true});
+    });
 });
+
 
 router.delete('/:id', function (req, res, next) {
     var id = req.params.id;
@@ -45,19 +83,6 @@ router.delete('/:id', function (req, res, next) {
         }
 
         res.status(200).send({success: 'removed'});
-    });
-});
-
-router.put('/:id', function (req, res, next) {
-    var id = req.params.id;
-    var body = req.body;
-
-    UserModel.findByIdAndUpdate(id, body, {new: true}, function (err, response) {
-        if (err) {
-            return next(err);
-        }
-
-        res.status(200).send({success: true});
     });
 });
 

@@ -4,7 +4,10 @@ define(['Backbone'], function (Backbone) {
             'myApp/login': 'login',
             'myApp/register': 'register',
             'myApp/main': 'main',
-            'myApp/friends': 'friends',
+            'myApp/home': 'home',
+            'myApp/news': 'news',
+            'myApp/user/friends': 'friends',
+            'myApp/user/searchFriends': 'searchFriends',
             '*any': 'default'
         },
 
@@ -54,9 +57,12 @@ define(['Backbone'], function (Backbone) {
 
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
-            } else {
+            } else if (APP.mainView) {
+                Backbone.history.navigate('#myApp/home', {trigger: true});
+            }
+            else {
                 require(['views/main'], function (MainView) {
-                    APP.mainView = APP.mainView || new MainView();
+                    APP.mainView = new MainView();
                 });
             }
         },
@@ -75,6 +81,60 @@ define(['Backbone'], function (Backbone) {
                         self.view.undelegateEvents();
                     }
                     self.view = new FriendsView();
+                });
+            }
+        },
+
+        news: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (!APP.mainView) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/news'], function (NewsView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new NewsView();
+                });
+            }
+        },
+
+        home: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (!APP.mainView) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/home'], function (SearchFriendsView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new SearchFriendsView();
+                });
+            }
+        },
+
+        searchFriends: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (!APP.mainView) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/searchFriends'], function (SearchFriendsView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new SearchFriendsView();
                 });
             }
         },

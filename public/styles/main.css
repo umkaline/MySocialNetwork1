@@ -37,3 +37,21 @@ body {
     margin: 5px;
     width: 440px;
 }
+
+.oneFriend {
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    width: 700px;
+}
+
+.miniAvatarHolder .feedInfo {
+    display: table-cell;
+}
+
+.miniAvatar {
+    width: 50px;
+}
+
+

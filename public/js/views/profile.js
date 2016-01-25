@@ -95,6 +95,7 @@ define([
             user.fetch({
                 success: function () {
                     self.render();
+                    APP.me = APP.me || user;
                 },
                 error: function (err, xhr) {
                     alert('Some error');

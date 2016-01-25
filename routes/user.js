@@ -18,6 +18,32 @@ router.get('/', function (req, res, next) {
         res.status(200).send(users);
     });
 });
+
+router.get('/searchFriends', function (req, res, next) {
+    UserModel.find({"friends._id" : {$ne: req.session.userId},
+                    "_id": {$ne: req.session.userId}},
+        {"password":0})
+        .exec(function (err, users) {
+            if (err) {
+                return next(err);
+            }
+
+            res.status(200).send(users);
+        });
+});
+
+router.get('/friends', function (req, res, next) {
+    UserModel.find({"friends._id" : req.session.userId},
+        {"password":0})
+        .exec(function (err, users) {
+            if (err) {
+                return next(err);
+            }
+
+            res.status(200).send(users);
+        });
+});
+
 router.get('/:id', function (req, res, next) {
     var id = req.params.id;
 

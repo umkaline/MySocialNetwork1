@@ -11,7 +11,8 @@ define([
         template: _.template(mainTemplate),
 
         events: {
-            'click #logoutBtn': 'logout'
+            'click #logoutBtn': 'logout',
+            'click #searchFriendsBtn': 'searchFriends'
         },
 
         initialize: function (options) {
@@ -41,6 +42,7 @@ define([
                         APP.authorised = false;
                         APP.mainView.undelegateEvents();
                         delete APP.mainView;
+                        delete APP.me;
                         localStorage.clear();
                         Backbone.history.navigate('myApp/login', {trigger: true});
                     }
@@ -49,6 +51,12 @@ define([
                     alert('Some error');
                 }
             });
+        },
+
+        searchFriends: function(e) {
+            e.preventDefault();
+            this.homeView.undelegateEvents();
+            Backbone.history.navigate('myApp/user/searchFriends', {trigger: true});
         },
 
         render: function () {

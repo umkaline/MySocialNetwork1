@@ -19,6 +19,7 @@
         </p>
         <!--  <button id=<%= feeds[feed]._id %> class="editBtn">Edit</button> -->
         <button id=<%= feeds[feed]._id %> class="deleteBtn">Delete</button>
+        <span class="likes"><%= feeds[feed].likes || 0 %> Likes</span><br>
     </div>
     <% } %>
 </div>
