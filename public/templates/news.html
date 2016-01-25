@@ -2,16 +2,16 @@
 <br>
 <div id="allMyFeeds">
     <% for(var feed in feeds) { %>
-    <div class="oneFeed">
-        <div class="miniAvatarHolder">
-            <img class="miniAvatar" src=<%= feeds[feed].photo %>>
+    <div class="oneFeed media">
+        <div class="miniAvatarHolder media-left">
+            <img class="miniAvatar media-object" src=<%= feeds[feed].photo %>>
+            <span id="firstName"><%= feeds[feed].userName %></span>
         </div>
-        <div class="feedInfo">
-        <span id="firstName"><%= feeds[feed].userName %></span><br>
+        <div class="feedInfo media-body">
+        <span class="label">Posted: </span>
+        <span class="postedDate"><%= feeds[feed].dateOfPost%></span><br>
         <span class="label">Topic: </span>
         <span class="feedsTopic"><%= feeds[feed].topic%></span>
-        <span class="label">Posted: </span>
-        <span class="postedDate"><%= feeds[feed].dateOfPost%></span>
         <p class="feedText">
             <%= feeds[feed].text%>
         </p>

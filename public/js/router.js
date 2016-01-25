@@ -74,6 +74,7 @@ define(['Backbone'], function (Backbone) {
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
             } else if (!APP.mainView) {
+                APP.next = Backbone.history.fragment;
                 Backbone.history.navigate('#myApp/main', {trigger: true});
             } else {
                 require(['views/friends'], function (FriendsView) {
@@ -92,6 +93,7 @@ define(['Backbone'], function (Backbone) {
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
             } else if (!APP.mainView) {
+                APP.next = Backbone.history.fragment;
                 Backbone.history.navigate('#myApp/main', {trigger: true});
             } else {
                 require(['views/news'], function (NewsView) {
@@ -110,6 +112,7 @@ define(['Backbone'], function (Backbone) {
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
             } else if (!APP.mainView) {
+                APP.next = Backbone.history.fragment;
                 Backbone.history.navigate('#myApp/main', {trigger: true});
             } else {
                 require(['views/home'], function (SearchFriendsView) {
@@ -128,6 +131,7 @@ define(['Backbone'], function (Backbone) {
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
             } else if (!APP.mainView) {
+                APP.next = Backbone.history.fragment;
                 Backbone.history.navigate('#myApp/main', {trigger: true});
             } else {
                 require(['views/searchFriends'], function (SearchFriendsView) {

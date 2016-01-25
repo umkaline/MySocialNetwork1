@@ -1,8 +1,8 @@
 <div>
     <% for(var i in friends) { %>
     <div id=<%= friends[i]._id %> class="oneFriend">
-        <div id="avatarHolder">
-            <img id="avatar" src=<%= friends[i].photo %>>
+        <div id="avatarHolder" class="media-left">
+            <img id="avatar" class="media-object" src=<%= friends[i].photo %>>
         </div>
         <div id="userInfo">
             <h3>Profile:</h3>
