@@ -1,0 +1,25 @@
+<div>
+    <% for(var i in users) { %>
+    <div id=<%= users[i]._id %> class="oneFriend">
+        <div id="avatarHolder" class="media-left">
+            <img class="media-object" id="avatar" src=<%= users[i].photo %>>
+        </div>
+        <div id="userInfo">
+            <h3>Profile:</h3>
+            <span class="label">First Name: </span>
+            <span id="firstName"><%= users[i].firstName %></span><br>
+            <span class="label">Last Name: </span>
+            <span id="lastName"><%= users[i].lastName %></span><br>
+            <span class="label">Date of birth: </span>
+            <span id="dateOfBirth"><%= users[i].dateOfBirth %></span><br>
+            <span class="label">E-Mail: </span>
+            <span id="email"><%= users[i].email %></span><br>
+            <span class="label">Address: </span>
+            <span id="address"><%= users[i].address %></span><br>
+            <span class="label">Location: </span>
+            <span id="location"><%= users[i].location %></span><br>
+            <button class="removeBtn" id=<%= users[i]._id %>>Remove User</button>
+        </div>
+    </div>
+    <% } %>
+</div>

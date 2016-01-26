@@ -11,6 +11,42 @@ define([
         initialize: function (options) {
 
             this.render();
+
+            if (APP.io) {
+                APP.io.emit('hello', APP.me.get('_id'));
+
+                var io = APP.io;
+
+                io.on('message', function (message) {
+
+                    APP.messagesUnreadFrom = APP.messagesUnreadFrom || [];
+                    if (APP.messagesUnreadFrom.indexOf(message.sender._id) == -1) {
+                        var $chatNotifyCount = $('#chatNotify');
+                        var messCount = $chatNotifyCount.html();
+                        $chatNotifyCount.html(++messCount);
+                        APP.messagesUnreadFrom.push(message.sender._id);
+                    }
+                });
+            } else {
+                require(['/socket.io/socket.io.js'], function (ios) {
+                    APP.io = APP.io || ios();
+                    APP.io.emit('hello', APP.me.get('_id'));
+
+                    var io = APP.io;
+
+                    io.on('message', function (message) {
+
+                        APP.messagesUnreadFrom = APP.messagesUnreadFrom || [];
+                        if (APP.messagesUnreadFrom.indexOf(message.sender._id) == -1) {
+                            var $chatNotifyCount = $('#chatNotify');
+                            var messCount = $chatNotifyCount.html();
+                            $chatNotifyCount.html(++messCount);
+                            APP.messagesUnreadFrom.push(message.sender._id);
+                        }
+
+                    });
+                });
+            }
         },
 
         render: function () {

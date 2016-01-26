@@ -3,21 +3,18 @@ define(['Backbone'], function (Backbone) {
         routes: {
             'myApp/login': 'login',
             'myApp/register': 'register',
+            'myApp/recover': 'recover',
+            'myApp/recover/:recoveryKey': 'recoverPass',
             'myApp/main': 'main',
             'myApp/home': 'home',
             'myApp/news': 'news',
             'myApp/chat': 'chat',
+            'myApp/admin': 'admin',
+            'myApp/admin/users': 'adminUsers',
+            'myApp/admin/posts': 'adminPosts',
             'myApp/user/friends': 'friends',
             'myApp/user/searchFriends': 'searchFriends',
             '*any': 'default'
-        },
-
-        initialize: function () {
-            //events chanel
-            /*this.chanel = _.extend({}, Backbone.Events);
-            this.listenTo(this.chanel, 'customEvent', function () {
-                console.log('---- customEvent fired ----');
-            })*/
         },
 
         login: function () {
@@ -52,18 +49,104 @@ define(['Backbone'], function (Backbone) {
             }
         },
 
+        recover: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (APP.authorised) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/recover'], function (RecoverView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new RecoverView();
+                });
+            }
+        },
+
+        recoverPass: function (recoveryKey) {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (APP.authorised) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/recoverPass'], function (RecoverPassView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new RecoverPassView({recoveryKey: recoveryKey});
+                });
+            }
+        },
+
         main: function () {
             var self = this;
             APP.authorised = localStorage.getItem('loggedIn');
+
+            delete APP.mainAdminView;
 
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
             } else if (APP.mainView) {
                 Backbone.history.navigate('#myApp/home', {trigger: true});
-            }
-            else {
+            } else {
                 require(['views/main'], function (MainView) {
                     APP.mainView = new MainView();
+                });
+            }
+        },
+
+        admin: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            delete APP.mainView;
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (APP.mainAdminView) {
+                Backbone.history.navigate('#myApp/admin/users', {trigger: true});
+            } else {
+                require(['views/admin/main'], function (MainAdminView) {
+                    APP.mainAdminView = new MainAdminView();
+                });
+            }
+        },
+
+        adminUsers: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            }  else if (!APP.mainAdminView) {
+                Backbone.history.navigate('#myApp/admin', {trigger: true});
+            } else {
+                require(['views/admin/users'], function (AdminUsersView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new AdminUsersView();
+                });
+            }
+        },
+
+        adminPosts: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (!APP.mainAdminView) {
+                Backbone.history.navigate('#myApp/admin', {trigger: true});
+            } else {
+                require(['views/admin/posts'], function (AdminPostsView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new AdminPostsView();
                 });
             }
         },

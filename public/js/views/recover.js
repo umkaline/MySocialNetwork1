@@ -2,47 +2,47 @@ define([
     'Backbone',
     'Underscore',
     'models/user',
-    'text!templates/login.html'
-], function (Backbone, _, UserModel, loginTemplate) {
+    'text!templates/recover.html'
+], function (Backbone, _, UserModel, recoverTemplate) {
     var View = Backbone.View.extend({
-        el      : "#content-holder",
-        template: _.template(loginTemplate),
+        el: "#content-holder",
+        template: _.template(recoverTemplate),
 
         events: {
-            'click #loginBtn': 'login'
+            'click #recoverBtn': 'recover'
         },
 
         initialize: function (options) {
             this.render();
         },
 
-        login: function (e) {
+        recover: function (e) {
             e.preventDefault();
-            var email = this.$el.find('#email').val();
-            var password = this.$el.find('#password').val();
+
+            var $required = this.$el.find('#email');
+            var email = $required.val();
+
+            if(!email) {
+                return alert("Please enter email");
+            }
+
+
             var data = {
-                email   : email,
-                password: password
+                email: email
             };
 
             var user = new UserModel(data);
-            user.urlRoot = '/login';
+            user.urlRoot = '/recover';
             user.save(null, {
                 success: function (response, xhr) {
-
                     if (response.attributes.fail) {
                         alert(response.attributes.fail);
                         console.log(response.attributes.fail);
                     } else {
-                        APP.authorised = true;
-                        localStorage.setItem('loggedIn', 'true');
-
-                        APP.me = response;
-
-                        Backbone.history.navigate('myApp/main', {trigger: true});
+                        Backbone.history.navigate('myApp/login', {trigger: true});
                     }
                 },
-                error  : function (err, xhr) {
+                error: function (err, xhr) {
                     alert('Some error');
                 }
             });

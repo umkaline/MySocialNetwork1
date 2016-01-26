@@ -10,14 +10,12 @@ var staticUrl = path.join(__dirname, 'public');
 var session = require('express-session');
 var SessionStorage = require('connect-mongo')(session);
 var io = require('socket.io')(http);
+var mailer = require("nodemailer");
 
 var env = process.env.NODE_ENV || 'development';
-var connectionStr;
 var db;
 var opts;
-var server;
 
-var sequence = 1;
 
 global.ioClients = {};
 
@@ -37,9 +35,17 @@ db.once('connected', function () {
     var userRouter = require('./routes/user');
     var feedRouter = require('./routes/feed');
     var chatRouter = require('./routes/chat');
+    var adminRouter = require('./routes/admin');
 
     function onlyAuth(req, res, next) {
         if (req.session && req.session.loggedIn) {
+            return next();
+        }
+        res.status(401).send();
+    };
+
+    function onlyAdmin(req, res, next) {
+        if (req.session && req.session.isAdmin) {
             return next();
         }
         res.status(401).send();
@@ -70,6 +76,8 @@ db.once('connected', function () {
 
     app.use('/myApi/chat', onlyAuth, chatRouter);
 
+    app.use('/myApi/admin', onlyAdmin, adminRouter);
+
     app.post('/login', function (req, res, next) {
         var body = req.body;
         var shaSum;
@@ -91,7 +99,11 @@ db.once('connected', function () {
                         req.session.loggedIn = true;
                         req.session.userId = user._id;
 
-                        return res.status(200).send({success: 'Logged In'});
+                        if (user.admin) {
+                            req.session.isAdmin = true;
+                        }
+
+                        return res.status(200).send(user);
                     } else {
                         return res.status(200).send({fail: 'Wrong Password'});
                     }
@@ -125,7 +137,7 @@ db.once('connected', function () {
                     var user = new UserModel(req.body);
                     var shaSum = crypto.createHash('sha256');
 
-                    if(user.password){
+                    if (user.password) {
                         shaSum.update(user.password);
                         user.password = shaSum.digest('hex');
                     }
@@ -135,12 +147,105 @@ db.once('connected', function () {
                             return next(err);
                         }
 
-                        res.status(200).send(_user);
+                        res.status(200).send({success: true});
                     });
                 }
             });
         } else {
             return res.status(200).send({fail: 'Specify Email'});
+        }
+    });
+
+    app.post('/recover', function (req, res, next) {
+        var body = req.body;
+        var UserModel = mongoose.model('user');
+
+        if (body.email) {
+            UserModel.findOne({
+                'email': body.email
+            }, function (err, user) {
+                if (err) {
+                    next(err);
+                }
+                if (!user) {
+                    return res.status(200).send({fail: 'Email Not Registered'});
+                } else {
+
+                    var shaSum = crypto.createHash('sha256');
+                    shaSum.update(String(Date.now()));
+                    user.recoveryKey = shaSum.digest('hex');
+
+                    user.save(function (err, _user) {
+                        if (err) {
+                            return next(err);
+                        }
+
+
+                        var smtpTransport = mailer
+                            .createTransport('smtps://vrakashy0101%40gmail.com:vrakashy0102@smtp.gmail.com');
+
+
+                        var mail = {
+                            from: "VRakashy",
+                            to: "glmax132@gmail.com",
+                            subject: "Password recovery",
+                            text: user.recoveryKey,
+                            html: "<b>http://localhost:3000/#myApp/recover/" + user.recoveryKey + "</b>"
+                        }
+
+                        smtpTransport.sendMail(mail, function (error, response) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                console.log("Message sent: " + response);
+                            }
+
+                            smtpTransport.close();
+
+                        });
+
+                        res.status(200).send({success: true});
+
+                    });
+                }
+            });
+        } else {
+            return res.status(200).send({fail: 'Specify Email'});
+        }
+    });
+
+    app.post('/recover/:recoveryKey', function (req, res, next) {
+        var body = req.body;
+        var recoveryKey = req.params.recoveryKey;
+        var shaSum;
+        var UserModel = mongoose.model('user');
+
+        if (body.password) {
+            UserModel.findOne({
+                'recoveryKey': recoveryKey
+            }, function (err, user) {
+                if (err) {
+                    next(err);
+                }
+                shaSum = crypto.createHash('sha256');
+                shaSum.update(body.password);
+                body.password = shaSum.digest('hex');
+
+                if (user) {
+                    user.password = body.password;
+                    user.save(function (err, _user) {
+                        if (err) {
+                            return next(err);
+                        }
+                        return res.status(200).send({success: true});
+                    });
+                } else {
+                    return res.status(200).send({fail: 'Recovery key is not valid'});
+                }
+            });
+
+        } else {
+            return res.status(200).send({fail: 'No password specified'});
         }
     });
 
@@ -150,26 +255,27 @@ db.once('connected', function () {
         res.status(200).send({success: true});
     });
 
-    io.on('connection', function(socket){
+    io.on('connection', function (socket) {
         console.info('New client connected (id=' + socket.id + ').');
 
-        socket.on('hello', function(_id) {
+        socket.on('hello', function (_id) {
             if (!global.ioClients[_id]) {
                 global.ioClients[_id] = socket;
                 socket._id = _id;
             }
         });
 
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             global.ioClients[socket._id] = undefined;
             console.info('Client gone (id=' + socket._id + ').');
         });
     });
 
-    http.listen(3000, function(){
+    http.listen(3000, function () {
         console.log('listening on *:3000');
     });
-});
+})
+;
 db.on('error', function (err) {
     console.error(err);
 });

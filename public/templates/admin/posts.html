@@ -1,0 +1,22 @@
+<h1>Posts:</h1>
+<br>
+<div id="allFeeds">
+    <% for(var i in posts) { %>
+    <div class="oneFeed media">
+        <div class="miniAvatarHolder media-left">
+            <img class="miniAvatar media-object" src=<%= posts[i].photo %>>
+            <span id="firstName"><%= posts[i].userName %></span>
+        </div>
+        <div class="feedInfo media-body">
+        <span class="label">Posted: </span>
+        <span class="postedDate"><%= posts[i].dateOfPost%></span><br>
+        <span class="label">Topic: </span>
+        <span class="feedsTopic"><%= posts[i].topic%></span>
+        <p class="feedText">
+            <%= posts[i].text%>
+        </p>
+        </div>
+        <button class="removeBtn" id=<%= posts[i]._id %> class="deleteBtn">Delete</button>
+    </div>
+    <% } %>
+</div>
