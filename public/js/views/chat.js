@@ -16,7 +16,7 @@ define([
             'click a.chatWithBtn': 'switchChatTab'
         },
 
-        switchChatTab: function(e) {
+        switchChatTab: function (e) {
             e.preventDefault();
             e.stopPropagation();
             var self = this;
@@ -34,6 +34,19 @@ define([
             chat.url = chat.url + nextFriend.get('_id');
             chat.fetch({
                 success: function (collection) {
+
+                    APP.messagesUnreadFrom = APP.messagesUnreadFrom || [];
+                    var id = APP.messagesUnreadFrom.indexOf(nextFriend.get('_id'));
+
+                    if (id != -1) {
+                        var $chatNotifyCount = $('#chatNotify');
+                        var messCount = $chatNotifyCount.html();
+                        $chatNotifyCount.html(--messCount);
+
+                        APP.messagesUnreadFrom.splice(id, 1);
+                    }
+
+
                     self.chat = collection.toJSON()[0].conversation;
                     self.render();
                 },
@@ -102,6 +115,18 @@ define([
                     chat.url = chat.url + collection.at(self.chatWith).get('_id');
                     chat.fetch({
                         success: function (coll) {
+
+
+                            APP.messagesUnreadFrom = APP.messagesUnreadFrom || [];
+                            var id = APP.messagesUnreadFrom.indexOf(collection.at('0').get('_id'));
+
+                            if (id != -1) {
+                                var $chatNotifyCount = $('#chatNotify');
+                                var messCount = $chatNotifyCount.html();
+                                $chatNotifyCount.html(--messCount);
+
+                                APP.messagesUnreadFrom.splice(id, 1);
+                            }
                             self.chat = coll.toJSON()['0'].conversation;
                             self.render();
                         },
@@ -120,9 +145,9 @@ define([
 
                 var io = APP.io;
 
-                io.on('message', function(message) {
-                    friendId = self.collection.at(self.chatWith).get('_id');
-                    if (message.sender._id === friendId) {
+                io.on('message', function (message) {
+                    var friendId = self.collection.at(self.chatWith).get('_id');
+                    if (self.chat && Backbone.history.fragment == "myApp/chat" && message.sender._id === friendId) {
                         self.chat.push(message);
                         self.render();
                     }
@@ -134,9 +159,9 @@ define([
 
                     var io = APP.io;
 
-                    io.on('message', function(message) {
-                        friendId = self.collection.at(self.chatWith).get('_id');
-                        if (message.sender._id === friendId) {
+                    io.on('message', function (message) {
+                        var friendId = self.collection.at(self.chatWith).get('_id');
+                        if (self.chat && Backbone.history.fragment == "myApp/chat" && message.sender._id === friendId) {
                             self.chat.push(message);
                             self.render();
                         }
@@ -154,6 +179,7 @@ define([
             var friendId = friend.get('_id');
             var myId = APP.me.get('_id');
             friends = friends.toJSON();
+
             var data = {
                 friends: friends,
                 chat: chat,
@@ -162,6 +188,19 @@ define([
                 moment: moment
             };
             this.$el.html(this.template(data));
+
+
+            APP.messagesUnreadFrom = APP.messagesUnreadFrom || [];
+            var id = APP.messagesUnreadFrom.indexOf(friendId);
+
+            if (id != -1) {
+                var $chatNotifyCount = $('#chatNotify');
+                var messCount = $chatNotifyCount.html();
+                $chatNotifyCount.html(--messCount);
+
+                APP.messagesUnreadFrom.splice(id, 1);
+            }
+
 
             return this;
         }

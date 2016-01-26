@@ -7,7 +7,7 @@ define([
     'text!templates/main.html'
 ], function (Backbone, _, UserModel, MenuView, HomeView, mainTemplate) {
     var View = Backbone.View.extend({
-        el      : "#content-holder",
+        el: "#content-holder",
         template: _.template(mainTemplate),
 
         events: {
@@ -29,6 +29,44 @@ define([
                 }
                 this.homeView = new HomeView();
             }
+
+            setTimeout(function () {
+                if (APP.io) {
+                    APP.io.emit('hello', APP.me.get('_id'));
+
+                    var io = APP.io;
+
+                    io.on('message', function (message) {
+
+                        APP.messagesUnreadFrom = APP.messagesUnreadFrom || [];
+                        if (APP.messagesUnreadFrom.indexOf(message.sender._id) == -1) {
+                            var $chatNotifyCount = $('#chatNotify');
+                            var messCount = $chatNotifyCount.html();
+                            $chatNotifyCount.html(++messCount);
+                            APP.messagesUnreadFrom.push(message.sender._id);
+                        }
+                    });
+                } else {
+                    require(['/socket.io/socket.io.js'], function (ios) {
+                        APP.io = APP.io || ios();
+                        APP.io.emit('hello', APP.me.get('_id'));
+
+                        var io = APP.io;
+
+                        io.on('message', function (message) {
+
+                            APP.messagesUnreadFrom = APP.messagesUnreadFrom || [];
+                            if (APP.messagesUnreadFrom.indexOf(message.sender._id) == -1) {
+                                var $chatNotifyCount = $('#chatNotify');
+                                var messCount = $chatNotifyCount.html();
+                                $chatNotifyCount.html(++messCount);
+                                APP.messagesUnreadFrom.push(message.sender._id);
+                            }
+
+                        });
+                    });
+                }
+            }, 2000);
 
         },
 
@@ -58,15 +96,15 @@ define([
                         Backbone.history.navigate('myApp/login', {trigger: true});
                     }
                 },
-                error  : function (err, xhr) {
+                error: function (err, xhr) {
                     alert('Some error');
                 }
             });
         },
 
-        searchFriends: function(e) {
+        searchFriends: function (e) {
             e.preventDefault();
-            
+
             if (this.homeView) {
                 this.homeView.undelegateEvents()
             }
@@ -77,7 +115,7 @@ define([
             var self = this;
             this.$el.html(this.template());
 
-            if(APP.next) {
+            if (APP.next) {
                 var next = APP.next;
                 delete APP.next;
                 Backbone.history.navigate(next, {trigger: true});

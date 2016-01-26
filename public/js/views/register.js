@@ -69,7 +69,7 @@ define([
             $location = this.$el.find('#location');
 
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
+                navigator.geolocation.getCurrentPosition(showPosition, showPositionError);
             } else {
                 $location.val("Geolocation is not supported by this browser.");
             }
@@ -77,6 +77,13 @@ define([
             function showPosition(position) {
                 $location.val("Latitude:" + position.coords.latitude +
                     ";Longitude:" + position.coords.longitude);
+            }
+
+            function showPositionError(err) {
+                $location.val(err.message);
+                $.getJSON("http://ipinfo.io", function(ipinfo){
+                    $location.val(ipinfo.loc);
+                });
             }
         },
 

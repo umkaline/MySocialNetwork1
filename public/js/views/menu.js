@@ -9,6 +9,7 @@ define([
         template: _.template(menuTemplate),
 
         initialize: function (options) {
+
             this.render();
         },
 
