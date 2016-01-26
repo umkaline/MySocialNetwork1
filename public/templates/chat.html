@@ -1,0 +1,48 @@
+<div class="col-xs-2">
+    <ul class="nav nav-tabs tabs-left">
+        <% for(var i in friends) { %>
+        <li class=<%= friends[i].class || "" %>>
+        <a class="chatWithBtn" href="#<%= friends[i]._id %>"  id=<%= i %> data-toggle="tab">
+        <img class="miniAvatar" src=<%= friends[i].photo %> id=<%= i %>>
+            <%= friends[i].firstName %>
+            </a></li>
+        <% } %>
+    </ul>
+</div>
+
+<div class="col-xs-9">
+    <div class="tab-content">
+        <% for(var i in friends) { %>
+        <% if (friends[i].class) { %>
+        <div class="tab-pane <%= friends[i].class %>" id=<%= i %>>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="message" placeholder="Message">
+                    <div class="input-group-btn">
+                        <button type="button" id="sendMsgBtn" class="btn btn-default" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        <% }} %>
+        <br>
+        <div id="conversation">
+            <% if(chat) { %>
+            <% for(var i = chat.length - 1; i >= 0; i--) { %>
+            <% var cond = chat[i].sender._id == myId %>
+            <% var cls = cond ? "alert alert-success" : "alert alert-info" %>
+            <div class="oneMessage <%= cls  %>">
+                <span class="label">
+                    <%= moment(chat[i].date).format("HH:mm:ss DD-MMM-YYYY") %>
+                </span>
+            <span class="message">
+                <%= chat[i].text%>
+            </span>
+            </div>
+            <% }} %>
+        </div>
+    </div>
+</div>

@@ -6,6 +6,7 @@ define(['Backbone'], function (Backbone) {
             'myApp/main': 'main',
             'myApp/home': 'home',
             'myApp/news': 'news',
+            'myApp/chat': 'chat',
             'myApp/user/friends': 'friends',
             'myApp/user/searchFriends': 'searchFriends',
             '*any': 'default'
@@ -135,6 +136,25 @@ define(['Backbone'], function (Backbone) {
                 Backbone.history.navigate('#myApp/main', {trigger: true});
             } else {
                 require(['views/searchFriends'], function (SearchFriendsView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    self.view = new SearchFriendsView();
+                });
+            }
+        },
+
+        chat: function () {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (!APP.authorised) {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            } else if (!APP.mainView) {
+                APP.next = Backbone.history.fragment;
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/chat'], function (SearchFriendsView) {
                     if (self.view) {
                         self.view.undelegateEvents();
                     }

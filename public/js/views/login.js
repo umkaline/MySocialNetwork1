@@ -35,6 +35,7 @@ define([
                     } else {
                         APP.authorised = true;
                         localStorage.setItem('loggedIn', 'true');
+
                         Backbone.history.navigate('myApp/main', {trigger: true});
                     }
                 },

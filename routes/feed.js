@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
 var FeedModel;
+var UserModel;
 
 require('../models/feed');
 FeedModel = mongoose.model('feed');
@@ -81,7 +82,6 @@ router.delete('/:id', function (req, res, next) {
         if (err) {
             return next(err);
         }
-
         res.status(200).send({success: 'removed'});
     });
 });

@@ -29,6 +29,7 @@ define([
                 }
                 this.homeView = new HomeView();
             }
+
         },
 
         logout: function (e) {
@@ -43,8 +44,15 @@ define([
                         console.log(response.attributes.fail);
                     } else {
                         APP.authorised = false;
-                        APP.mainView.undelegateEvents();
-                        delete APP.mainView;
+                        if (APP.mainView) {
+                            APP.mainView.undelegateEvents();
+                            delete APP.mainView;
+                        }
+                        if (APP.io) {
+                            APP.io.disconnect();
+                            delete APP.io;
+                        }
+
                         delete APP.me;
                         localStorage.clear();
                         Backbone.history.navigate('myApp/login', {trigger: true});
@@ -58,6 +66,7 @@ define([
 
         searchFriends: function(e) {
             e.preventDefault();
+            
             if (this.homeView) {
                 this.homeView.undelegateEvents()
             }

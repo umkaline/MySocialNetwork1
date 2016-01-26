@@ -3,6 +3,7 @@ define([
     'router'
 ], function (Backbone, Router) {
     function init() {
+
         var router = new Router();
 
         APP.router = router || {};

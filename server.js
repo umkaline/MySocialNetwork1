@@ -1,22 +1,25 @@
 var express = require('express');
-var http = require('http');
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var app = express();
+var http = require('http').Server(app);
 var path = require('path');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var staticUrl = path.join(__dirname, 'public');
 var session = require('express-session');
 var SessionStorage = require('connect-mongo')(session);
-var socket = require('socket.io');
-var io;
+var io = require('socket.io')(http);
 
 var env = process.env.NODE_ENV || 'development';
 var connectionStr;
 var db;
 var opts;
 var server;
+
+var sequence = 1;
+
+global.ioClients = {};
 
 require('./models/user');
 UserModel = mongoose.model('user');
@@ -33,6 +36,7 @@ db = mongoose.connection;
 db.once('connected', function () {
     var userRouter = require('./routes/user');
     var feedRouter = require('./routes/feed');
+    var chatRouter = require('./routes/chat');
 
     function onlyAuth(req, res, next) {
         if (req.session && req.session.loggedIn) {
@@ -63,6 +67,8 @@ db.once('connected', function () {
     app.use('/myApi/user', onlyAuth, userRouter);
 
     app.use('/myApi/feed', onlyAuth, feedRouter);
+
+    app.use('/myApi/chat', onlyAuth, chatRouter);
 
     app.post('/login', function (req, res, next) {
         var body = req.body;
@@ -144,7 +150,25 @@ db.once('connected', function () {
         res.status(200).send({success: true});
     });
 
-    app.listen(3000);
+    io.on('connection', function(socket){
+        console.info('New client connected (id=' + socket.id + ').');
+
+        socket.on('hello', function(_id) {
+            if (!global.ioClients[_id]) {
+                global.ioClients[_id] = socket;
+                socket._id = _id;
+            }
+        });
+
+        socket.on('disconnect', function() {
+            global.ioClients[socket._id] = undefined;
+            console.info('Client gone (id=' + socket._id + ').');
+        });
+    });
+
+    http.listen(3000, function(){
+        console.log('listening on *:3000');
+    });
 });
 db.on('error', function (err) {
     console.error(err);

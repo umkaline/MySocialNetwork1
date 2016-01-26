@@ -54,4 +54,8 @@ body {
     width: 50px;
 }
 
+.alert-success, .alert-info {
+    margin: 5px;
+    padding: 0px;
+}
 
