@@ -26,13 +26,13 @@ define([
                 return alert("Please enter email");
             }
 
-
             var data = {
                 email: email
             };
 
             var user = new UserModel(data);
             user.urlRoot = '/recover';
+
             user.save(null, {
                 success: function (response, xhr) {
                     if (response.attributes.fail) {

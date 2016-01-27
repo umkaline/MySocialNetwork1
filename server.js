@@ -159,13 +159,14 @@ db.once('connected', function () {
 
                     var smtpTransport = mailer
                         .createTransport('smtps://vrakashy0101%40gmail.com:vrakashy0102@smtp.gmail.com');
+                    var origin = req.headers.referer;
 
                     var mail = {
                         from: "VRakashy",
                         to: body.email,
                         subject: "Account registration confirmation",
                         text: user.registrationKey,
-                        html: "<b>http://localhost:3000/#myApp/register/" + user.registrationKey + "</b>"
+                        html: "<b>" + origin + "/#myApp/register/" + user.registrationKey + "</b>"
                     };
 
                     smtpTransport.sendMail(mail, function (error, response) {
@@ -248,13 +249,14 @@ db.once('connected', function () {
                         var smtpTransport = mailer
                             .createTransport('smtps://vrakashy0101%40gmail.com:vrakashy0102@smtp.gmail.com');
 
+                        var origin = req.headers.referer;
 
                         var mail = {
                             from: "VRakashy",
                             to: body.email,
                             subject: "Password recovery",
                             text: user.recoveryKey,
-                            html: "<b>http://localhost:3000/#myApp/recover/" + user.recoveryKey + "</b>"
+                            html: "<b>" + origin + "#myApp/recover/" + user.recoveryKey + "</b>"
                         }
 
                         smtpTransport.sendMail(mail, function (error, response) {
