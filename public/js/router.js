@@ -102,7 +102,10 @@ define(['Backbone'], function (Backbone) {
             var self = this;
             APP.authorised = localStorage.getItem('loggedIn');
 
-            delete APP.mainAdminView;
+            if (APP.mainAdminView) {
+                APP.mainAdminView.undelegateEvents();
+                delete APP.mainAdminView;
+            }
 
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
@@ -119,7 +122,12 @@ define(['Backbone'], function (Backbone) {
             var self = this;
             APP.authorised = localStorage.getItem('loggedIn');
 
-            delete APP.mainView;
+            if (APP.mainView) {
+                APP.mainView.undelegateEvents();
+                delete APP.mainView;
+            }
+
+
 
             if (!APP.authorised) {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
