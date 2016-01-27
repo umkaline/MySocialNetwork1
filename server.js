@@ -116,7 +116,7 @@ db.once('connected', function () {
                             return res.status(200).send({fail: 'Wrong Password'});
                         }
                     } else {
-                        return res.status(200).send({fail: 'Account not activated yet'});
+                        return res.status(200).send({fail: 'Account not activated yet. Please check your mail'});
                     }
                 } else {
                     return res.status(200).send({fail: 'No Such User'});
