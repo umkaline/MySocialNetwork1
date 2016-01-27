@@ -11,7 +11,6 @@ require.config({
         views      : './views',
         templates  : '../templates',
         moment     : './libs/moment/moment'
-        //io         : '/socket.io/socket.io'
     },
     shim : {
         Underscore: {
