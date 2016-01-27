@@ -43,6 +43,7 @@ define([
             var location = this.$el.find('#location').val();
             var dateOfBirth = this.$el.find('#dateOfBirth').val();
             var photo = this.$el.find('#photoURL').val();
+            var password = this.$el.find('#password').val();
             var data = {
                 email: email,
                 firstName: firstName,
@@ -50,7 +51,8 @@ define([
                 address: address,
                 dateOfBirth: dateOfBirth,
                 location: location,
-                photo: photo
+                photo: photo,
+                password: password
             };
 
             user.validate = function(attrs, options) {

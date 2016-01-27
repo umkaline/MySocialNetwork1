@@ -11,6 +11,7 @@ var userSchema = new Schema({
     dateOfBirth: {type: Date, default: Date.now, required: true},
     address: String,
     recoveryKey: String,
+    registrationKey: String,
     location: {type: String, required: true},
     friends: [friendsSchema],
     admin: Boolean,

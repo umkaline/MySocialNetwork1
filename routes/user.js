@@ -48,6 +48,13 @@ router.get('/friends', function (req, res, next) {
 router.put('/:id', function (req, res, next) {
     var id = req.params.id;
     var body = req.body;
+    var shaSum;
+
+    if (body.password) {
+        shaSum = crypto.createHash('sha256');
+        shaSum.update(body.password);
+        body.password = shaSum.digest('hex');
+    }
 
 
     UserModel.findByIdAndUpdate(id, body, {new: true}, function (err, response) {

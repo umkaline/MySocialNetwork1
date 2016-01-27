@@ -3,6 +3,7 @@ define(['Backbone'], function (Backbone) {
         routes: {
             'myApp/login': 'login',
             'myApp/register': 'register',
+            'myApp/register/:registrationKey': 'registerConfirm',
             'myApp/recover': 'recover',
             'myApp/recover/:recoveryKey': 'recoverPass',
             'myApp/main': 'main',
@@ -47,6 +48,22 @@ define(['Backbone'], function (Backbone) {
                     self.view = new RegisterView();
                 });
             }
+        },
+
+        registerConfirm: function(registrationKey) {
+            var host = Backbone.history.location.origin + '/';
+            var url = host + 'register/' + registrationKey;
+
+            function success() {
+                Backbone.history.navigate('#myApp/login', {trigger: true});
+            }
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {},
+                success: success
+            });
         },
 
         recover: function () {

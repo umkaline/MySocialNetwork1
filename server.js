@@ -86,7 +86,7 @@ db.once('connected', function () {
         if (body.password && body.email) {
             UserModel.findOne({
                 'email': body.email
-            }, function (err, user) {
+            }, {"recoveryKey": 0}, function (err, user) {
                 if (err) {
                     next(err);
                 }
@@ -95,17 +95,28 @@ db.once('connected', function () {
                 body.password = shaSum.digest('hex');
 
                 if (user) {
-                    if (user.password === body.password) {
-                        req.session.loggedIn = true;
-                        req.session.userId = user._id;
+                    if (!user.registrationKey) {
+                        if (user.password === body.password) {
+                            req.session.loggedIn = true;
+                            req.session.userId = user._id;
 
-                        if (user.admin) {
-                            req.session.isAdmin = true;
+                            if (user.admin) {
+                                req.session.isAdmin = true;
+                            }
+
+                            var resp = user.toJSON();
+
+                            delete resp.password;
+                            delete resp.admin;
+                            delete resp.recoveryKey;
+                            delete resp.registrationKey;
+
+                            return res.status(200).send(resp);
+                        } else {
+                            return res.status(200).send({fail: 'Wrong Password'});
                         }
-
-                        return res.status(200).send(user);
                     } else {
-                        return res.status(200).send({fail: 'Wrong Password'});
+                        return res.status(200).send({fail: 'Account not activated yet'});
                     }
                 } else {
                     return res.status(200).send({fail: 'No Such User'});
@@ -136,11 +147,37 @@ db.once('connected', function () {
                 } else {
                     var user = new UserModel(req.body);
                     var shaSum = crypto.createHash('sha256');
+                    var shaSum1 = crypto.createHash('sha256');
 
                     if (user.password) {
                         shaSum.update(user.password);
                         user.password = shaSum.digest('hex');
+
+                        shaSum1.update(String(Date.now()));
+                        user.registrationKey = shaSum1.digest('hex');
                     }
+
+                    var smtpTransport = mailer
+                        .createTransport('smtps://vrakashy0101%40gmail.com:vrakashy0102@smtp.gmail.com');
+
+                    var mail = {
+                        from: "VRakashy",
+                        to: body.email,
+                        subject: "Account registration confirmation",
+                        text: user.registrationKey,
+                        html: "<b>http://localhost:3000/#myApp/register/" + user.registrationKey + "</b>"
+                    };
+
+                    smtpTransport.sendMail(mail, function (error, response) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log("Message sent: " + response);
+                        }
+
+                        smtpTransport.close();
+
+                    });
 
                     user.save(function (err, _user) {
                         if (err) {
@@ -154,6 +191,33 @@ db.once('connected', function () {
         } else {
             return res.status(200).send({fail: 'Specify Email'});
         }
+    });
+
+    app.post('/register/:registrationKey', function (req, res, next) {
+        var UserModel = mongoose.model('user');
+        var registrationKey = req.params.registrationKey;
+
+        UserModel.findOne({
+            'registrationKey': registrationKey
+        }, function (err, user) {
+            if (err) {
+                next(err);
+            }
+            if (!user) {
+                return res.status(200).send({fail: "User allready activated or doesn't exist"});
+            } else {
+
+                user.registrationKey = undefined;
+
+                user.save(function (err, _user) {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    res.status(200).send({success: true});
+                });
+            }
+        });
     });
 
     app.post('/recover', function (req, res, next) {
@@ -187,7 +251,7 @@ db.once('connected', function () {
 
                         var mail = {
                             from: "VRakashy",
-                            to: "glmax132@gmail.com",
+                            to: body.email,
                             subject: "Password recovery",
                             text: user.recoveryKey,
                             html: "<b>http://localhost:3000/#myApp/recover/" + user.recoveryKey + "</b>"
@@ -233,6 +297,7 @@ db.once('connected', function () {
 
                 if (user) {
                     user.password = body.password;
+                    user.recoveryKey = undefined;
                     user.save(function (err, _user) {
                         if (err) {
                             return next(err);
