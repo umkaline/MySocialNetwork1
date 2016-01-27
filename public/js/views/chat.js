@@ -13,7 +13,14 @@ define([
 
         events: {
             'click #sendMsgBtn': 'sendMessage',
-            'click a.chatWithBtn': 'switchChatTab'
+            'click a.chatWithBtn': 'switchChatTab',
+            'keyup #message': 'keyUp'
+        },
+
+        keyUp: function(e) {
+            if(event.keyCode == 13){
+                $("#sendMsgBtn").click();
+            }
         },
 
         switchChatTab: function (e) {
