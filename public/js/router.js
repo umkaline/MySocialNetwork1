@@ -3,7 +3,7 @@ define(['Backbone'], function (Backbone) {
         routes: {
             'myApp/login': 'login',
             'myApp/register': 'register',
-            'myApp/register/:registrationKey': 'registerConfirm',
+            'myApp/activate/:registrationKey': 'registerConfirm',
             'myApp/recover': 'recover',
             'myApp/recover/:recoveryKey': 'recoverPass',
             'myApp/main': 'main',
@@ -52,7 +52,7 @@ define(['Backbone'], function (Backbone) {
 
         registerConfirm: function(registrationKey) {
             var host = Backbone.history.location.origin + '/';
-            var url = host + 'register/' + registrationKey;
+            var url = host + 'activate/' + registrationKey;
 
             function success() {
                 Backbone.history.navigate('#myApp/login', {trigger: true});
@@ -244,10 +244,17 @@ define(['Backbone'], function (Backbone) {
                 Backbone.history.navigate('#myApp/main', {trigger: true});
             } else {
                 require(['views/searchFriends'], function (SearchFriendsView) {
+
+                    var $radius = $("#kmRadius");
+                    var radius = $radius.val();
+                    var options = {
+                        radius: radius
+                    }
+
                     if (self.view) {
                         self.view.undelegateEvents();
                     }
-                    self.view = new SearchFriendsView();
+                    self.view = new SearchFriendsView(options);
                 });
             }
         },

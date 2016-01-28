@@ -15,14 +15,20 @@ define([
         initialize: function (options) {
             var self = this;
             var friends = new UserCollection();
-            this.collection = friends;
-            friends.url = '/myApi/user/searchFriends';
+            var url = '/myApi/user/searchFriends/';
+
+            url = url + options.radius;
+            self.radius = options;
+            self.collection = friends;
+
+            friends.url = url;
             friends.fetch({
-                success: function () {
+                success: function (collection) {
                     self.render();
                 },
                 error: function (err, xhr) {
-                    alert('Some error');
+                    self.render();
+                    //alert('Some error');
                 }
             });
         },
@@ -43,7 +49,11 @@ define([
             });
 
             function success(data, textStatus, jqXHR) {
-                self.initialize();
+                var $friendsCounter = $('#friendsCount');
+                var friendsCount = $friendsCounter.html();
+
+                $friendsCounter.html(++friendsCount);
+                self.initialize(self.radius);
             }
         },
 

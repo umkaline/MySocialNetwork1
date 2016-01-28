@@ -1,6 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var crypto = require('crypto');
+var sendMail = require("../helpers/mailSender");
 var router = express.Router();
 var UserModel;
 
@@ -8,33 +9,47 @@ require('../models/user');
 UserModel = mongoose.model('user');
 
 router.get('/', function (req, res, next) {
-    UserModel.findOne({"_id" : req.session.userId},
-        {"password":0, "admin": 0, "recoveryKey": 0, "registrationKey": 0})
-        .exec(function (err, users) {
-        if (err) {
-            return next(err);
-        }
-
-        res.status(200).send(users);
-    });
-});
-
-router.get('/searchFriends', function (req, res, next) {
-    UserModel.find({"friends._id" : {$ne: req.session.userId},
-                    "_id": {$ne: req.session.userId}},
-        {"password":0, "admin": 0, "recoveryKey": 0, "registrationKey": 0})
+    UserModel.findOne({"_id": req.session.userId},
+        {"password": 0, "admin": 0, "recoveryKey": 0, "registrationKey": 0})
         .exec(function (err, users) {
             if (err) {
                 return next(err);
             }
+
+            res.status(200).send(users);
+        });
+});
+
+router.get('/searchFriends/:km', function (req, res, next) {
+    var km = req.params.km * 1000;
+    var myId = req.session.userId;
+    var myLoc = req.session.myLocation;
+
+    UserModel.find({
+            "friends._id": {$ne: myId},
+            "_id": {$ne: myId}, location: {$near: {
+                $geometry: {
+                    type: "Point",
+                    coordinates: myLoc
+                },
+                $minDistance: 0,
+                $maxDistance: km
+            }
+        }
+        },
+        {"password": 0, "admin": 0, "recoveryKey": 0, "registrationKey": 0})
+        .exec(function (err, users) {
+            /*if (err) {
+                return next(err);
+            }*/
 
             res.status(200).send(users);
         });
 });
 
 router.get('/friends', function (req, res, next) {
-    UserModel.find({"friends._id" : req.session.userId},
-        {"password":0, "admin": 0, "recoveryKey": 0, "registrationKey": 0})
+    UserModel.find({"friends._id": req.session.userId},
+        {"password": 0, "admin": 0, "recoveryKey": 0, "registrationKey": 0})
         .exec(function (err, users) {
             if (err) {
                 return next(err);
@@ -44,20 +59,38 @@ router.get('/friends', function (req, res, next) {
         });
 });
 
+router.get('/invite/:email', function (req, res, next) {
+    var friendEmail = req.params.email;
+    var myId = req.session.userId;
+
+
+
+});
 
 router.put('/:id', function (req, res, next) {
     var id = req.params.id;
+    var myId = req.session.myId;
     var body = req.body;
     var shaSum;
+
+    if (id != myId) {
+         return res.status(200).send({fail: 'cheater!'});
+    }
 
     if (body.password) {
         shaSum = crypto.createHash('sha256');
         shaSum.update(body.password);
         body.password = shaSum.digest('hex');
+    } else {
+        delete body.password;
     }
 
+    delete body.friends;
 
-    UserModel.findByIdAndUpdate(id, body, {new: true}, function (err, response) {
+    req.session.myLocation = body.location
+
+
+    UserModel.findByIdAndUpdate(myId, body, {new: true}, function (err, response) {
         if (err) {
             return next(err);
         }

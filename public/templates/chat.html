@@ -34,11 +34,11 @@
             <% for(var i = chat.length - 1; i >= 0; i--) { %>
             <% var cond = chat[i].sender._id == myId %>
             <% var cls = cond ? "alert alert-success" : "alert alert-info" %>
-            <div class="oneMessage <%= cls  %>">
+            <div>
                 <span class="label">
                     <%= moment(chat[i].date).format("HH:mm:ss DD-MMM-YYYY") %>
                 </span>
-            <span class="message">
+            <span class="message oneMessage <%= cls  %>">
                 <%= chat[i].text%>
             </span>
             </div>

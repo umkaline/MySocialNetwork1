@@ -2,7 +2,6 @@
     <img class="media-object" id="avatar" src=<%= user.photo %>>
 </div>
 <div id="userInfo">
-    <h3>Profile:</h3>
     <span class="label">First Name: </span>
     <span id="firstName"><%= user.firstName %></span><br>
     <span class="label">Last Name: </span>
@@ -14,6 +13,10 @@
     <span class="label">Address: </span>
     <span id="address"><%= user.address %></span><br>
     <span class="label">Location: </span>
-    <span id="location"><%= user.location %></span><br>
+    <span id="location">
+        <a href="https://www.google.com.ua/maps/search/<%= user.location %>" target="_blank">
+            <%= user.location %>
+        </a>
+    </span><br>
     <button id="editBtn">Edit</button>
 </div>

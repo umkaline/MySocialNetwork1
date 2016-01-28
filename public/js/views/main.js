@@ -70,6 +70,7 @@ define([
             if (this.homeView) {
                 this.homeView.undelegateEvents()
             }
+            Backbone.history.navigate('myApp/user/main');
             Backbone.history.navigate('myApp/user/searchFriends', {trigger: true});
         },
 

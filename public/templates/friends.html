@@ -1,11 +1,10 @@
-<div>
+<div id="friendHolder">
     <% for(var i in friends) { %>
     <div id=<%= friends[i]._id %> class="oneFriend">
         <div id="avatarHolder" class="media-left">
             <img class="media-object" id="avatar" src=<%= friends[i].photo %>>
         </div>
         <div id="userInfo">
-            <h3>Profile:</h3>
             <span class="label">First Name: </span>
             <span id="firstName"><%= friends[i].firstName %></span><br>
             <span class="label">Last Name: </span>

@@ -21,6 +21,7 @@
     "jquery": "~2.1.4",
     "text": "~2.0.14",
     "moment": "momentjs#~2.11.1",
-    "bootstrap-vertical-tabs": "~1.2.1"
+    "bootstrap-vertical-tabs": "~1.2.1",
+    "bootstrap": "~3.3.6"
   }
 }

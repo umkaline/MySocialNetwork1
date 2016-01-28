@@ -28,6 +28,10 @@ define([
             });
 
             function success(data, textStatus, jqXHR) {
+                var $friendsCounter = $('#friendsCount');
+                var friendsCount = $friendsCounter.html();
+
+                $friendsCounter.html(--friendsCount);
                 self.initialize();
             }
         },

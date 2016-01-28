@@ -34,7 +34,7 @@ define([
             var firstName = this.$el.find('#firstName').val();
             var lastName = this.$el.find('#lastName').val();
             var address = this.$el.find('#address').val();
-            var location = this.$el.find('#location').val();
+            var location = this.$el.find('#location').val().split(',');
             var dateOfBirth = this.$el.find('#dateOfBirth').val();
             var data = {
                 email: email,
@@ -68,23 +68,9 @@ define([
 
             $location = this.$el.find('#location');
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showPositionError);
-            } else {
-                $location.val("Geolocation is not supported by this browser.");
-            }
-
-            function showPosition(position) {
-                $location.val("Latitude:" + position.coords.latitude +
-                    ";Longitude:" + position.coords.longitude);
-            }
-
-            function showPositionError(err) {
-                $location.val(err.message);
-                $.getJSON("http://ipinfo.io", function(ipinfo){
-                    $location.val(ipinfo.loc);
-                });
-            }
+            $.getJSON("http://ipinfo.io", function(ipinfo){
+                $location.val(ipinfo.loc);
+            });
         },
 
         render: function () {

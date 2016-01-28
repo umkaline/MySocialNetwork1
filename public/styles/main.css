@@ -2,6 +2,23 @@ body {
     padding: 10px;
 }
 
+#content-holder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#content {
+    align-self: center;
+}
+
+#friendHolder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .form-group.required .control-label:after {
     color: #d00;
     content: "*";
@@ -31,6 +48,7 @@ body {
 }
 
 .oneFeed {
+    align-self: center;
     border: 1px solid #000000;
     border-radius: 5px;
     padding: 5px;
@@ -43,7 +61,12 @@ body {
     border-radius: 5px;
     padding: 5px;
     margin: 5px;
-    width: 700px;
+    width: 500px;
+}
+
+#conversation {
+    display: flex;
+    flex-direction: column;
 }
 
 .miniAvatarHolder .feedInfo {
@@ -56,6 +79,8 @@ body {
 
 .alert-success, .alert-info {
     margin: 5px;
-    padding: 0px;
+    padding: 0px 2px;
+    display: inline-block;
+    align-self: flex-start;
 }
 
