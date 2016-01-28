@@ -66,6 +66,48 @@ router.put('/:id', function (req, res, next) {
     });
 });
 
+router.put('/newFriend/:id', function (req, res, next) {
+    var friendId = req.params.id;
+    var myId = req.session.userId;
+    var newfriend = {_id: friendId};
+
+    UserModel.findByIdAndUpdate(myId, {$addToSet: {"friends": newfriend}}, {new: true}, function (err, response) {
+        if (err) {
+            return next(err);
+        }
+
+        newfriend = {_id: myId};
+
+        UserModel.findByIdAndUpdate(friendId, {$addToSet: {"friends": newfriend}}, {new: true}, function (err, response) {
+            if (err) {
+                return next(err);
+            }
+            res.status(200).send({success: true});
+        });
+    });
+});
+
+router.delete('/friend/:id', function (req, res, next) {
+    var friendId = req.params.id;
+    var myId = req.session.userId;
+    var friend = {_id: friendId};
+
+    UserModel.findByIdAndUpdate(myId, {$pull: {"friends": friend}}, {new: true}, function (err, response) {
+        if (err) {
+            return next(err);
+        }
+
+        friend = {_id: myId};
+
+        UserModel.findByIdAndUpdate(friendId, {$pull: {"friends": friend}}, {new: true}, function (err, response) {
+            if (err) {
+                return next(err);
+            }
+            res.status(200).send({success: true});
+        });
+    });
+});
+
 module.exports = router;
 
 

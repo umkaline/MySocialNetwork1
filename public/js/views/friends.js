@@ -14,32 +14,22 @@ define([
 
         removeFriend: function (e) {
             e.preventDefault();
+
             var self = this;
-            var friends = self.collection;
-            var removedFriend = friends.get(e.target.id);
-            var me = APP.me;
-            var myFriends = me.get('friends');
-            var i = myFriends.indexOf(removedFriend);
+            var friendId = e.target.id;
+            var origin = Backbone.history.location.origin;
+            var url = origin + '/myApi/user/friend/' + friendId;
 
-            myFriends.splice(i, 1);
-            me.set('friends', myFriends);
-
-            me.save(null, {});
-
-            var myRemovedFriendFriends = removedFriend.get('friends');
-            i = myRemovedFriendFriends.indexOf(me);
-            myRemovedFriendFriends.splice(i, 1);
-            removedFriend.set('friends', myRemovedFriendFriends);
-
-            removedFriend.save(null, {
-                success: function (response, xhr) {
-                    self.collection.remove(removedFriend);
-                    self.render();
-                },
-                error: function (err, xhr) {
-                    alert('Some error');
-                }
+            $.ajax({
+                type: "DELETE",
+                url: url,
+                data: {},
+                success: success
             });
+
+            function success(data, textStatus, jqXHR) {
+                self.initialize();
+            }
         },
 
         initialize: function (options) {

@@ -29,30 +29,22 @@ define([
 
         addFriend: function (e) {
             e.preventDefault();
+
             var self = this;
-            var friends = self.collection;
-            var newFriend = friends.get(e.target.id);
-            var me = APP.me;
-            var myFriends = me.get('friends') || [];
+            var friendId = e.target.id;
+            var origin = Backbone.history.location.origin;
+            var url = origin + '/myApi/user/newFriend/' + friendId;
 
-            myFriends.push({_id: newFriend.get('_id')});
-            me.set('friends', myFriends);
-
-            me.save(null, {});
-
-            var myNewFriendFriends = newFriend.get('friends') || [];
-            myNewFriendFriends.push({_id: me.get('_id')});
-            newFriend.set('friends', myNewFriendFriends);
-
-            newFriend.save(null, {
-                success: function (response, xhr) {
-                    self.collection.remove(newFriend);
-                    self.render();
-                },
-                error: function (err, xhr) {
-                    alert('Some error');
-                }
+            $.ajax({
+                type: "PUT",
+                url: url,
+                data: {},
+                success: success
             });
+
+            function success(data, textStatus, jqXHR) {
+                self.initialize();
+            }
         },
 
         render: function () {

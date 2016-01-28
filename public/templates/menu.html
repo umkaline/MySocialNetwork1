@@ -20,13 +20,20 @@
                 <li><a href="#myApp/user/friends">Friends <span class="badge">-</span></a></li>
             </ul>
             <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Friend">
+                <div class="form-group input-group">
+                    <input type="text" class="form-control" placeholder="people in radius" aria-describedby="basic-addon2">
+                    <span class="input-group-addon" id="basic-addon2">km</span>
                 </div>
-                <button type="submit" class="btn btn-default" id="searchFriendsBtn">Search</button>
+                <button type="submit" class="btn btn-default" id="searchFriendsBtn">Find</button>
+            </form>
+            <form class="navbar-form navbar-left" role="invite">
+                <div class="form-group input-group">
+                    <input type="text" class="form-control" placeholder="email of friend" aria-describedby="basic-addon3">
+                    <span class="input-group-addon" id="basic-addon3"></span>
+                </div>
+                <button type="submit" class="btn btn-default" id="inviteBtn">Invite</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li class="disabled" ><a href="#myApp/settings" id="settingsBtn">Settings</a></li>
                 <li><a href="#" id="logoutBtn">Log Out</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
