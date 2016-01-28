@@ -62,8 +62,17 @@ router.get('/friends', function (req, res, next) {
 router.get('/invite/:email', function (req, res, next) {
     var friendEmail = req.params.email;
     var myId = req.session.userId;
+    var myName = req.session.myName;
 
+    var origin = req.headers.referer;
+    var to = friendEmail;
+    var subject = "Invitation to register at VRacashy from " + myName;
+    var text =  '';
+    var html = "<b>" + origin + "#myApp/register/" + myId + "</b>";
 
+    sendMail(to, subject, text, html);
+
+    res.status(200).send({success: true});
 
 });
 

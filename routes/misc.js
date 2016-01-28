@@ -30,6 +30,7 @@ router.post('/login', function (req, res, next) {
                         req.session.loggedIn = true;
                         req.session.userId = user._id;
                         req.session.myLocation = user.location;
+                        req.session.myName = user.firstName + ' ' + user.lastName;
 
                         if (user.admin) {
                             req.session.isAdmin = true;
@@ -78,30 +79,45 @@ router.post('/register', function (req, res, next) {
             } else {
                 var user = new UserModel(req.body);
                 var shaSum = crypto.createHash('sha256');
-                var shaSum1 = crypto.createHash('sha256');
 
                 if (user.password) {
                     shaSum.update(user.password);
                     user.password = shaSum.digest('hex');
 
-                    shaSum1.update(String(Date.now()));
-                    user.registrationKey = shaSum1.digest('hex');
+
                 }
 
-                var origin = req.headers.referer;
-                var to = body.email;
-                var subject = "Account registration confirmation";
-                var text =  user.registrationKey;
-                var html = "<b>" + origin + "#myApp/activate/" + user.registrationKey + "</b>";
+                if(!body.friends) {
+                    var shaSum1 = crypto.createHash('sha256');
 
-                sendMail(to, subject, text, html);
+                    shaSum1.update(String(Date.now()));
+                    user.registrationKey = shaSum1.digest('hex');
+
+                    var origin = req.headers.referer;
+                    var to = body.email;
+                    var subject = "Account registration confirmation";
+                    var text = user.registrationKey;
+                    var html = "<b>" + origin + "#myApp/activate/" + user.registrationKey + "</b>";
+
+                    sendMail(to, subject, text, html);
+                }
 
                 user.save(function (err, _user) {
                     if (err) {
                         return next(err);
                     }
 
-                    res.status(200).send({success: true});
+                    if(_user.friends && _user.friends.length) {
+                        var friendId = _user.friends[0];
+                        var newfriend = {_id: _user._id};
+                        UserModel.findByIdAndUpdate(friendId, {$addToSet: {"friends": newfriend}}, {new: true}, function (err, response) {
+                            if (err) {
+                                return next(err);
+                            }
+                        });
+                    }
+
+                    return res.status(200).send({success: true});
                 });
             }
         });

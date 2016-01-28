@@ -3,6 +3,7 @@ define(['Backbone'], function (Backbone) {
         routes: {
             'myApp/login': 'login',
             'myApp/register': 'register',
+            'myApp/register/:id': 'registerInvited',
             'myApp/activate/:registrationKey': 'registerConfirm',
             'myApp/recover': 'recover',
             'myApp/recover/:recoveryKey': 'recoverPass',
@@ -46,6 +47,23 @@ define(['Backbone'], function (Backbone) {
                         self.view.undelegateEvents();
                     }
                     self.view = new RegisterView();
+                });
+            }
+        },
+
+        registerInvited: function (id) {
+            var self = this;
+            APP.authorised = localStorage.getItem('loggedIn');
+
+            if (APP.authorised) {
+                Backbone.history.navigate('#myApp/main', {trigger: true});
+            } else {
+                require(['views/register'], function (RegisterView) {
+                    if (self.view) {
+                        self.view.undelegateEvents();
+                    }
+                    var friends = [{_id: id}];
+                    self.view = new RegisterView(friends);
                 });
             }
         },

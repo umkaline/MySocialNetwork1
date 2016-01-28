@@ -28,7 +28,7 @@ router.delete('/users/:id', function (req, res, next) {
         if (err) {
             return next(err);
         }
-        UserModel.update({"friends._id": id}, {$pull: {"friends._id": id}})
+        UserModel.update({"friends._id": id}, {$pull: {"friends": {"_id": id}}})
             .exec(function (err, result) {
                 if (err) {
                     return next(err);

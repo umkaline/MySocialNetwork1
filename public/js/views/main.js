@@ -12,7 +12,8 @@ define([
 
         events: {
             'click #logoutBtn': 'logout',
-            'click #searchFriendsBtn': 'searchFriends'
+            'click #searchFriendsBtn': 'searchFriends',
+            'click #inviteBtn': 'inviteFriend'
         },
 
         initialize: function (options) {
@@ -72,6 +73,28 @@ define([
             }
             Backbone.history.navigate('myApp/user/main');
             Backbone.history.navigate('myApp/user/searchFriends', {trigger: true});
+        },
+
+        inviteFriend: function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $friendEmail = $('#friendEmail');
+            var friendEmail = $friendEmail.val();
+
+            var host = Backbone.history.location.origin + '/';
+            var url = host + 'myApi/user/invite/' + friendEmail;
+
+            function success() {
+                alert('Invitation sent');
+                $friendEmail.val('');
+            }
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {},
+                success: success
+            });
         },
 
         render: function () {
