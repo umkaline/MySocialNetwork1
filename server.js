@@ -6,7 +6,7 @@ var http = require('http').Server(app);
 var path = require('path');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
-var staticUrl = path.join(__dirname, 'public');
+//var staticUrl = path.join(__dirname, 'public');
 var session = require('express-session');
 var SessionStorage = require('connect-mongo')(session);
 var io = require('socket.io')(http);
@@ -60,7 +60,7 @@ db.once('connected', function () {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: false, limit: 1024 * 1024 * 200}));
 
-    app.use(express.static(staticUrl));
+    app.use(express.static(__dirname + '/public'));
     app.use(session({
         name: 'VRakashy',
         key: "key",
