@@ -16,11 +16,6 @@ var env = process.env.NODE_ENV || 'development';
 var db;
 var opts;
 
-console.log('lsknclsandcjnslcksckljndckjsndkcjnsekjcnse');
-console.log('lsknclsandcjnslcksckljndckjsndkcjnsekjcnse');
-console.log('lsknclsandcjnslcksckljndckjsndkcjnsekjcnse');
-console.log('lsknclsandcjnslcksckljndckjsndkcjnsekjcnse');
-
 global.ioClients = {};
 
 require('./models/user');
