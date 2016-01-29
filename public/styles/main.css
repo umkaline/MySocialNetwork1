@@ -12,6 +12,7 @@ body {
     align-self: center;
 }
 
+
 #friendHolder {
     display: flex;
     flex-direction: row;
