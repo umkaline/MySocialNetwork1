@@ -21,6 +21,8 @@ global.ioClients = {};
 
 require('./models/user');
 UserModel = mongoose.model('user');
+require('./models/chat');
+ChatModel = mongoose.model('chat');
 
 require('./config/' + env);
 opts = {
@@ -84,6 +86,7 @@ db.once('connected', function () {
     io.on('connection', function (socket) {
         console.info('New client connected (id=' + socket.id + ').');
 
+
         socket.on('hello', function (_id) {
             if (!global.ioClients[_id]) {
                 global.ioClients[_id] = socket;
@@ -94,6 +97,9 @@ db.once('connected', function () {
         socket.on('disconnect', function () {
             global.ioClients[socket._id] = undefined;
             console.info('Client gone (id=' + socket._id + ').');
+            UserModel.findByIdAndUpdate(socket._id, {$set: {"logOutDate": new Date()}}, {new: true},
+                function () {
+                });
         });
     });
 

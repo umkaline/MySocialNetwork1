@@ -12,6 +12,7 @@ var userSchema = new Schema({
     address: String,
     recoveryKey: String,
     registrationKey: String,
+    logOutDate: Date,
     location: { type: [Number], index: '2dsphere'},
     friends: [friendsSchema],
     admin: Boolean,

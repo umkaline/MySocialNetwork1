@@ -7,6 +7,7 @@ var participantSchema = new Schema({
 
 var conversationSchema = new Schema({
     sender: participantSchema,
+    isReaded: {type: Boolean, default: false},
     text: {type: String, required: true},
     date: {type: Date, default: Date.now}
 });

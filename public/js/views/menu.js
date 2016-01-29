@@ -13,7 +13,6 @@ define([
             this.render();
 
             if (APP.io) {
-                APP.io.emit('hello', APP.myId);
 
                 var io = APP.io;
 
@@ -27,10 +26,12 @@ define([
                         APP.messagesUnreadFrom.push(message.sender._id);
                     }
                 });
+
+                APP.io.emit('hello', APP.myId);
+
             } else {
                 require(['/socket.io/socket.io.js'], function (ios) {
                     APP.io = APP.io || ios();
-                    APP.io.emit('hello', APP.myId);
 
                     var io = APP.io;
 
@@ -45,6 +46,8 @@ define([
                         }
 
                     });
+
+                    APP.io.emit('hello', APP.myId);
                 });
             }
         },
