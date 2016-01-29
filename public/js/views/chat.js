@@ -70,7 +70,7 @@ define([
             var chat = new ChatModel();
             var friend = self.collection.at(self.chatWith);
             var friendId = friend.get('_id');
-            var myId = APP.me.get('_id');
+            var myId = APP.myId;
             var $input = self.$el.find('#message');
             var message = $input.val();
             $input.val('');
@@ -148,7 +148,7 @@ define([
             });
 
             if (APP.io) {
-                APP.io.emit('hello', APP.me.get('_id'));
+                APP.io.emit('hello', APP.myId);
 
                 var io = APP.io;
 
@@ -162,7 +162,7 @@ define([
             } else {
                 require(['/socket.io/socket.io.js'], function (ios) {
                     APP.io = APP.io || ios();
-                    APP.io.emit('hello', APP.me.get('_id'));
+                    APP.io.emit('hello', APP.myId);
 
                     var io = APP.io;
 
@@ -184,7 +184,7 @@ define([
             var friends = self.collection;
             var friend = self.collection.at(self.chatWith);
             var friendId = friend.get('_id');
-            var myId = APP.me.get('_id');
+            var myId = APP.myId;
             friends = friends.toJSON();
 
             var data = {

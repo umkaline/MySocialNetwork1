@@ -26,7 +26,7 @@ define([
             }
             this.menuView = new MenuView();
 
-            if (next) {
+            if (!next) {
                 if (this.homeView) {
                     this.homeView.undelegateEvents()
                 }

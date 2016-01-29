@@ -10,7 +10,8 @@ body {
 
 #content {
     align-self: center;
-    width: 700px;
+    width: 500px;
+    justify-content: center;
 }
 
 
