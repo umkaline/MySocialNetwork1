@@ -37,6 +37,9 @@ define([
                         APP.authorised = true;
                         localStorage.setItem('loggedIn', 'true');
 
+                        APP.myId = response.id;
+                        localStorage.setItem('myId', APP.myId);
+
                         APP.me = response;
 
                         Backbone.history.navigate('myApp/main', {trigger: true});

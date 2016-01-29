@@ -13,7 +13,7 @@ define([
             this.render();
 
             if (APP.io) {
-                APP.io.emit('hello', APP.me.get('_id'));
+                APP.io.emit('hello', APP.myId);
 
                 var io = APP.io;
 
@@ -30,7 +30,7 @@ define([
             } else {
                 require(['/socket.io/socket.io.js'], function (ios) {
                     APP.io = APP.io || ios();
-                    APP.io.emit('hello', APP.me.get('_id'));
+                    APP.io.emit('hello', APP.myId);
 
                     var io = APP.io;
 

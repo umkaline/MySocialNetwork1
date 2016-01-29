@@ -17,18 +17,23 @@ define([
         },
 
         initialize: function (options) {
+            var next = APP.next;
+
             this.render();
 
-            if (!APP.next) {
-                if (this.menuView) {
-                    this.menuView.undelegateEvents()
-                }
-                this.menuView = new MenuView();
+            if (this.menuView) {
+                this.menuView.undelegateEvents()
+            }
+            this.menuView = new MenuView();
 
+            if (next) {
                 if (this.homeView) {
                     this.homeView.undelegateEvents()
                 }
                 this.homeView = new HomeView();
+            } else {
+                delete APP.next;
+                Backbone.history.navigate(next, {trigger: true});
             }
 
         },
@@ -71,7 +76,7 @@ define([
             if (this.homeView) {
                 this.homeView.undelegateEvents()
             }
-            Backbone.history.navigate('myApp/user/main');
+            Backbone.history.fragment = '';
             Backbone.history.navigate('myApp/user/searchFriends', {trigger: true});
         },
 
@@ -100,12 +105,6 @@ define([
         render: function () {
             var self = this;
             this.$el.html(this.template());
-
-            if (APP.next) {
-                var next = APP.next;
-                delete APP.next;
-                Backbone.history.navigate(next, {trigger: true});
-            }
 
             return this;
         }

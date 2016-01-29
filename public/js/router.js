@@ -130,6 +130,7 @@ define(['Backbone'], function (Backbone) {
             } else if (APP.mainView) {
                 Backbone.history.navigate('#myApp/home', {trigger: true});
             } else {
+                APP.myId = localStorage.getItem('myId');
                 require(['views/main'], function (MainView) {
                     APP.mainView = new MainView();
                 });
