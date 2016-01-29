@@ -28,5 +28,8 @@
   },
   "engines": {
     "node": "5.4.1"
+  },
+  "scripts": {
+    "postinstall": "bower install && grunt build"
   }
 }
