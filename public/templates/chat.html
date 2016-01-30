@@ -3,7 +3,7 @@
         <% for(var i in friends) { %>
         <li class=<%= friends[i].class || "" %>>
         <a class="chatWithBtn" href="#<%= friends[i]._id %>"  id=<%= i %> data-toggle="tab">
-        <img class="miniAvatar" src=<%= friends[i].photo %> id=<%= i %>>
+        <img class="nanoAvatar" src=<%= friends[i].photo %> id=<%= i %>>
             <%= friends[i].firstName %>
             </a></li>
         <% } %>
