@@ -33,6 +33,7 @@ mongoose.connect(process.env.DB_HOST, process.env.DB_NAME, parseInt(process.env.
 db = mongoose.connection;
 
 db.once('connected', function () {
+
     var miscRouter = require('./routes/misc');
     var userRouter = require('./routes/user');
     var feedRouter = require('./routes/feed');
@@ -45,7 +46,6 @@ db.once('connected', function () {
         }
         res.status(401).send();
     };
-
     function onlyAdmin(req, res, next) {
         if (req.session && req.session.isAdmin) {
             return next();
@@ -59,7 +59,6 @@ db.once('connected', function () {
     app.use(morgan('dev'));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: false, limit: 1024 * 1024 * 200}));
-
     app.use(express.static(__dirname + '/public'));
     app.use(session({
         name: 'VRakashy',
@@ -73,13 +72,9 @@ db.once('connected', function () {
     }));
 
     app.use('/myApi/user', onlyAuth, userRouter);
-
     app.use('/myApi/feed', onlyAuth, feedRouter);
-
     app.use('/myApi/chat', onlyAuth, chatRouter);
-
     app.use('/myApi/admin', onlyAdmin, adminRouter);
-
     app.use('/', miscRouter);
 
     io.on('connection', function (socket) {
