@@ -18,7 +18,7 @@ define([
         },
 
         keyUp: function(e) {
-            if(event.keyCode == 13){
+            if(event.which == '13'){
                 $("#sendMsgBtn").click();
             }
         },

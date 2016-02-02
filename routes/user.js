@@ -78,7 +78,7 @@ router.get('/invite/:email', function (req, res, next) {
 
 router.put('/:id', function (req, res, next) {
     var id = req.params.id;
-    var myId = req.session.myId;
+    var myId = req.session.userId;
     var body = req.body;
     var shaSum;
 
